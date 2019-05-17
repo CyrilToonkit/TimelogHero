@@ -28,20 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.clocksFlow = new TimelogHeroGUI.ReorderableFlow(this.components);
             this.SuspendLayout();
             // 
-            // Form1
+            // clocksFlow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.clocksFlow.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.clocksFlow.Location = new System.Drawing.Point(0, 0);
+            this.clocksFlow.Name = "clocksFlow";
+            this.clocksFlow.Size = new System.Drawing.Size(1629, 767);
+            this.clocksFlow.TabIndex = 0;
+            // 
+            // TimelogHeroForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(592, 270);
-            this.Name = "Form1";
+            this.ClientSize = new System.Drawing.Size(1629, 767);
+            this.Controls.Add(this.clocksFlow);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Name = "TimelogHeroForm";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TimelogHeroForm_FormClosing);
+            this.Load += new System.EventHandler(this.TimelogHeroForm_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private ReorderableFlow clocksFlow;
     }
 }
 
