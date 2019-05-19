@@ -46,17 +46,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClockUCtrl.cs">
+    <Compile Include="Components\AddClockUCtrl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ClockUCtrl.Designer.cs">
+    <Compile Include="Components\AddClockUCtrl.Designer.cs">
+      <DependentUpon>AddClockUCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\ClockUCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Components\ClockUCtrl.Designer.cs">
       <DependentUpon>ClockUCtrl.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReorderableFlow.cs">
+    <Compile Include="Components\ReorderableFlow.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ReorderableFlow.Designer.cs">
+    <Compile Include="Components\ReorderableFlow.Designer.cs">
       <DependentUpon>ReorderableFlow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\TimelogHeroUctrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Components\TimelogHeroUctrl.Designer.cs">
+      <DependentUpon>TimelogHeroUctrl.cs</DependentUpon>
     </Compile>
     <Compile Include="TimelogHeroForm.cs">
       <SubType>Form</SubType>
@@ -66,8 +78,14 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ClockUCtrl.resx">
+    <EmbeddedResource Include="Components\AddClockUCtrl.resx">
+      <DependentUpon>AddClockUCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Components\ClockUCtrl.resx">
       <DependentUpon>ClockUCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Components\TimelogHeroUctrl.resx">
+      <DependentUpon>TimelogHeroUctrl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TimelogHeroForm.resx">
       <DependentUpon>TimelogHeroForm.cs</DependentUpon>
@@ -80,6 +98,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -99,6 +118,12 @@
       <Project>{5ab704b1-599e-4da9-bc8d-8fa0746ddf22}</Project>
       <Name>TimeLogHeroLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\play.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pause.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

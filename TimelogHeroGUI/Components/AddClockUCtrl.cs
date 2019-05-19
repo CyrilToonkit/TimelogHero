@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TimeLogHeroLib;
 
 namespace TimelogHeroGUI
 {
-    public partial class TimelogHeroForm : Form
+    public partial class AddClockUCtrl : UserControl
     {
-        public TimelogHeroForm()
+        public AddClockUCtrl()
         {
             InitializeComponent();
         }
 
-        public void TimelogHeroForm_FormClosing(object sender, FormClosingEventArgs e)
+        public TimelogHeroUctrl Manager
         {
-            timelogHeroUctrl1.FormClosing(sender, e);
+            get { return ParentForm.Controls[0] as TimelogHeroUctrl; }
         }
     }
 }

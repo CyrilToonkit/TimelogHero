@@ -17,5 +17,12 @@ namespace TimeLogHeroLib
             get { return _activated; }
             set { _activated = value; }
         }
+
+        bool _archived = false;
+        public bool Archived
+        {
+            get { return _archived; }
+            set { _archived = value; }
+        }
     }
 }

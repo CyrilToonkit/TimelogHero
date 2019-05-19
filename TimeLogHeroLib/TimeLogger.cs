@@ -7,6 +7,11 @@ using System.Xml.Serialization;
 
 namespace TimeLogHeroLib
 {
+    public enum DurationModes
+    {
+        Today, Unarchived, All
+    }
+
     public class TimeLogger
     {
         TimeLogManager _manager = null;
@@ -18,13 +23,14 @@ namespace TimeLogHeroLib
         }
 
         #region time
+        /*
         TimeSpan _duration = TimeSpan.Zero;
         [XmlIgnore]
         public TimeSpan Duration
         {
             get { return _duration; }
             set { _duration = value; }
-        }
+        }*/
 
         bool _active = false;
         public bool Active
@@ -35,7 +41,7 @@ namespace TimeLogHeroLib
                 _active = value;
             }
         }
-
+        
         #endregion
 
         #region basic
@@ -46,7 +52,7 @@ namespace TimeLogHeroLib
             set { _name = value; }
         }
 
-        string _niceName = "New Clock";
+        string _niceName = "New Task";
         public string NiceName
         {
             get { return _niceName; }
@@ -61,7 +67,7 @@ namespace TimeLogHeroLib
         }
 
         string _user = "";
-        public string Userc
+        public string User
         {
             get { return string.IsNullOrEmpty(_user) ? Environment.UserName : _user; }
             set { _user = value; }
@@ -97,6 +103,13 @@ namespace TimeLogHeroLib
             get { return _solo; }
             set { _solo = value; }
         }
+
+        bool _archived = false;
+        public bool Archived
+        {
+            get { return _archived; }
+            set { _archived = value; }
+        }
         #endregion
 
         List<ActivationChanged> _history = new List<ActivationChanged>();
@@ -104,6 +117,11 @@ namespace TimeLogHeroLib
         {
             get { return _history; }
             set { _history = value; }
+        }
+
+        public List<ActivationChanged> ActiveHistory
+        {
+            get { return _history.SkipWhile(h => h.Archived).ToList(); }
         }
 
         public void Activate()
@@ -124,12 +142,65 @@ namespace TimeLogHeroLib
             }
         }
 
+        public TimeSpan GetDuration(DurationModes inMode)
+        {
+            TimeSpan duration = new TimeSpan(0);
+
+            List<ActivationChanged> history = inMode == DurationModes.Unarchived ? ActiveHistory : _history;
+
+            DateTime todayDateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+            DateTime lastStart = new DateTime(0);
+            foreach (ActivationChanged activation in history)
+            {
+                if (activation.Activated)
+                {
+                    lastStart = activation.Date;
+                }
+                else
+                {
+                    if (lastStart.Ticks > 0)
+                    {
+                        if (inMode == DurationModes.Today)
+                        {
+                            if (DateTime.Now.Year == activation.Date.Year && DateTime.Now.DayOfYear == activation.Date.DayOfYear)
+                            {
+                                duration += activation.Date - (lastStart > todayDateTime ? lastStart : todayDateTime);
+                            }
+                        }
+                        else
+                            duration += activation.Date - lastStart;
+                    }
+                }
+            }
+
+            //If its was activated till now
+            if (history.Count > 0 && history[history.Count - 1].Activated)
+            {
+                if (inMode == DurationModes.Today)
+                {
+                    duration += DateTime.Now - (history[history.Count - 1].Date > todayDateTime ? history[history.Count - 1].Date : todayDateTime);//
+                }
+                else
+                    duration += DateTime.Now - history[history.Count - 1].Date;
+            }
+
+            return duration;
+        }
+        /*
         public void RefreshDuration()
+        {
+            RefreshDuration(true);
+        }
+        
+        public void RefreshDuration(bool inSkipArchived)
         {
             Duration = new TimeSpan(0);
 
+            List<ActivationChanged> history = inSkipArchived ? ActiveHistory : _history;
+
             DateTime lastStart = new DateTime(0);
-            foreach(ActivationChanged activation in _history)
+            foreach (ActivationChanged activation in history)
             {
                 if(activation.Activated)
                 {
@@ -143,6 +214,12 @@ namespace TimeLogHeroLib
                     }
                 }
             }
-        }
+
+            //If its was activated till now
+            if (history.Count > 0 && history[history.Count - 1].Activated)
+            {
+                D
+            }
+        }*/
     }
 }

@@ -17,6 +17,35 @@ namespace TimeLogHeroLib
             set { _clocks = value; }
         }
 
+        [XmlIgnore]
+        public List<TimeLogger> ActiveClocks
+        {
+            get { return _clocks.Where(c => !c.Archived).ToList(); }
+        }
+
+        [XmlIgnore]
+        public List<TimeLogger> ArchivedClocks
+        {
+            get { return _clocks.Where(c => c.Archived).ToList(); }
+        }
+
+        public static string formatDuration(TimeSpan duration)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            int hours = duration.Days * 24 + duration.Hours;
+
+            if (hours > 0)
+                sb.Append(string.Format("{0} h ", hours));
+
+            if (duration.Minutes > 0)
+                sb.Append(string.Format("{0} m ", duration.Minutes));
+
+            sb.Append(string.Format("{0} s ", duration.Seconds));
+
+            return sb.ToString();
+        }
+
         /// <summary>
         /// Serialize the Data to a file
         /// </summary>
@@ -69,8 +98,6 @@ namespace TimeLogHeroLib
 
         public void LoadDefault()
         {
-            _clocks = new List<TimeLogger>() { new TimeLogger {NiceName = "Inactive", Default = true, AutoStart = true, Solo = true, Manager = this} };
-            _clocks[0].Activate();
         }
 
         /// <summary>
@@ -94,7 +121,6 @@ namespace TimeLogHeroLib
                     _clocks = loaded.Clocks;
 
                     stream.Close();
-                    return true;
                 }
                 catch (Exception)
                 {
@@ -104,19 +130,20 @@ namespace TimeLogHeroLib
                     }
                 }
             }
-
-            LoadDefault();
-
-            InitClocks();
+            else
+            {
+                LoadDefault();
+            }
 
             return false;
         }
 
-        private void InitClocks()
+        /*
+        public void RefreshDuration()
         {
             foreach (TimeLogger clock in _clocks)
                 clock.RefreshDuration();
-        }
+        }*/
 
         public void Load()
         {
@@ -126,6 +153,148 @@ namespace TimeLogHeroLib
         public string getFolder()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TimeLogHero");
+        }
+
+        public void ClockState(TimeLogger inClock, bool inActivate)
+        {
+            bool newValue = inActivate;
+
+            List<TimeLogger> toActivate = new List<TimeLogger>();
+            List<TimeLogger> toDeActivate = new List<TimeLogger>();
+
+            (inActivate ? toActivate : toDeActivate).Add(inClock);
+
+            bool allDeactivated = !inActivate;
+
+            foreach (TimeLogger clock in _clocks)
+            {
+                if (clock == inClock)
+                    continue;
+
+                if(inActivate)
+                {
+                    if (clock.Active)
+                    {
+                        if(inClock.Solo || clock.Solo)
+                            toDeActivate.Add(clock);
+                        else if(allDeactivated)
+                            allDeactivated = false;
+                    }
+                }
+                else if (clock.Active && allDeactivated)
+                {
+                    allDeactivated = false;
+                }
+            }
+
+            if (allDeactivated)
+            {
+                List<TimeLogger> autoStartCandidates = new List<TimeLogger>();
+
+                foreach (TimeLogger clock in _clocks)
+                {
+                    if (clock.AutoStart)
+                        autoStartCandidates.Add(clock);
+                }
+
+                //Reactivate an available TimeLogger
+                if (autoStartCandidates.Count > 0)
+                {
+                    autoStartCandidates.Sort();
+                    toActivate.Add(autoStartCandidates[0]);
+                }
+                else
+                {
+                    //Reactivate the same logger
+                    //toDeActivate.Remove(inClock);
+                }
+            }
+
+            foreach (TimeLogger clock in toActivate)
+            {
+                clock.Activate();
+            }
+
+            foreach (TimeLogger clock in toDeActivate)
+            {
+                clock.DeActivate();
+            }
+        }
+
+        public string GetUniqueName(string inName)
+        {
+            string uniqueName = inName;
+            bool unique = false;
+            int index = 0;
+
+            while(!unique)
+            {
+                bool exists = false;
+                foreach (TimeLogger clock in _clocks)
+                {
+                    if(clock.Name == uniqueName)
+                    {
+                        index += 1;
+                        uniqueName = inName + index.ToString();
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if(!exists)
+                    unique = true;
+            }
+
+            return uniqueName;
+        }
+
+        public void AddClock()
+        {
+            TimeLogger newClock = new TimeLogger();
+
+            newClock.Name = newClock.NiceName = GetUniqueName(newClock.Name);
+
+            List<int> priorities = new List<int>(){-1};
+
+            foreach (TimeLogger clock in _clocks)
+            {
+                priorities.Add(clock.Priority);
+            }
+
+            priorities.Sort();
+            priorities.Reverse();
+
+            newClock.Priority = priorities[0] + 1;
+
+            _clocks.Add(newClock);
+        }
+
+        public void Archive(TimeLogger inClock)
+        {
+            if (inClock.Active)
+                ClockState(inClock, false);
+
+            inClock.Archived = true;
+        }
+
+        public void Delete(TimeLogger inClock)
+        {
+            if (inClock.Active)
+                ClockState(inClock, false);
+
+            _clocks.Remove(inClock);
+        }
+
+        public void Unarchive(string clockName)
+        {
+            foreach (TimeLogger clock in ArchivedClocks)
+            {
+                if (clock.Name == clockName)
+                {
+                    clock.Archived = false;
+                    break;
+                }
+            }
         }
     }
 }
