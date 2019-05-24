@@ -29,6 +29,20 @@ namespace TimeLogHeroLib
             get { return _clocks.Where(c => c.Archived).ToList(); }
         }
 
+        bool _overrideToday = false;
+        public bool OverrideToday
+        {
+            get { return _overrideToday; }
+            set { _overrideToday = value; }
+        }
+
+        DateTime _overridenToday = DateTime.Now;
+        public DateTime Today
+        {
+            get { return _overrideToday ? _overridenToday :  DateTime.Now; }
+            set { _overridenToday = value; }
+        }
+
         public static string formatDuration(TimeSpan duration)
         {
             StringBuilder sb = new StringBuilder();
@@ -52,12 +66,17 @@ namespace TimeLogHeroLib
         /// <param name="inPath">Path to save the file to</param>
         /// <param name="inOverWrite">OverWrite if exists</param>
         /// <returns>True in case of success</returns>
-        public bool Save(string inPath, bool inOverWrite)
+        public bool Save(string inPath, bool inOverWrite, bool inBackup)
         {
             FileInfo ThisFileInfo = new FileInfo(inPath);
 
             if (inOverWrite || !(ThisFileInfo.Exists))
             {
+                if(ThisFileInfo.Exists && inBackup)
+                {
+                    ThisFileInfo.CopyTo(inPath.Replace(".xml", "_" + ThisFileInfo.LastAccessTime.Ticks.ToString() + ".xml"));
+                }
+
                 XmlSerializer thisSaveable = new XmlSerializer(GetType());
                 DirectoryInfo parentDir = ThisFileInfo.Directory;
 
@@ -93,7 +112,7 @@ namespace TimeLogHeroLib
 
         public void Save()
         {
-            Save(Path.Combine(getFolder(), "session.xml"), true);
+            Save(Path.Combine(getFolder(), "session.xml"), true, true);
         }
 
         public void LoadDefault()
@@ -119,6 +138,8 @@ namespace TimeLogHeroLib
                     TimeLogManager loaded = (TimeLogManager)thisSaveable.Deserialize(stream);
 
                     _clocks = loaded.Clocks;
+                    foreach (TimeLogger clock in _clocks)
+                        clock.Manager = this;
 
                     stream.Close();
                 }

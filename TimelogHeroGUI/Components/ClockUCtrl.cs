@@ -90,10 +90,9 @@ namespace TimelogHeroGUI
 
         private void nameEdit_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter && _clock.Name != nameEdit.Text)
             {
                 Manager.Rename(_clock, nameEdit.Text);
-                nameEdit.Hide();
             }
         }
 

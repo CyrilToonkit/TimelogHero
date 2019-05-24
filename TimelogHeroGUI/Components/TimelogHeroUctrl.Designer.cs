@@ -33,10 +33,14 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.totalLBL = new System.Windows.Forms.ToolStripLabel();
-            this.clocksPL = new System.Windows.Forms.Panel();
             this.ReopenDD = new System.Windows.Forms.ToolStripDropDownButton();
             this.cocoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clocksPL = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.todayDTP = new System.Windows.Forms.DateTimePicker();
+            this.todayCB = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // timer1
@@ -64,15 +68,6 @@
             this.totalLBL.Size = new System.Drawing.Size(54, 22);
             this.totalLBL.Text = "0 s today";
             // 
-            // clocksPL
-            // 
-            this.clocksPL.AutoScroll = true;
-            this.clocksPL.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.clocksPL.Location = new System.Drawing.Point(0, 0);
-            this.clocksPL.Name = "clocksPL";
-            this.clocksPL.Size = new System.Drawing.Size(814, 374);
-            this.clocksPL.TabIndex = 2;
-            // 
             // ReopenDD
             // 
             this.ReopenDD.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -88,20 +83,63 @@
             // cocoToolStripMenuItem
             // 
             this.cocoToolStripMenuItem.Name = "cocoToolStripMenuItem";
-            this.cocoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cocoToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.cocoToolStripMenuItem.Text = "Coco";
             this.cocoToolStripMenuItem.Click += new System.EventHandler(this.cocoToolStripMenuItem_Click);
+            // 
+            // clocksPL
+            // 
+            this.clocksPL.AutoScroll = true;
+            this.clocksPL.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.clocksPL.Location = new System.Drawing.Point(0, 0);
+            this.clocksPL.Name = "clocksPL";
+            this.clocksPL.Size = new System.Drawing.Size(814, 333);
+            this.clocksPL.TabIndex = 2;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.todayCB);
+            this.groupBox1.Controls.Add(this.todayDTP);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.groupBox1.Location = new System.Drawing.Point(0, 333);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(814, 41);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Options";
+            // 
+            // todayDTP
+            // 
+            this.todayDTP.Location = new System.Drawing.Point(121, 15);
+            this.todayDTP.Name = "todayDTP";
+            this.todayDTP.Size = new System.Drawing.Size(200, 20);
+            this.todayDTP.TabIndex = 0;
+            this.todayDTP.ValueChanged += new System.EventHandler(this.todayDTP_ValueChanged);
+            // 
+            // todayCB
+            // 
+            this.todayCB.AutoSize = true;
+            this.todayCB.Location = new System.Drawing.Point(6, 18);
+            this.todayCB.Name = "todayCB";
+            this.todayCB.Size = new System.Drawing.Size(109, 17);
+            this.todayCB.TabIndex = 1;
+            this.todayCB.Text = "Override \"Today\"";
+            this.todayCB.UseVisualStyleBackColor = true;
+            this.todayCB.CheckedChanged += new System.EventHandler(this.todayCB_CheckedChanged);
             // 
             // TimelogHeroUctrl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.clocksPL);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.toolStrip1);
             this.Name = "TimelogHeroUctrl";
             this.Size = new System.Drawing.Size(814, 399);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -115,6 +153,9 @@
         private System.Windows.Forms.Panel clocksPL;
         private System.Windows.Forms.ToolStripDropDownButton ReopenDD;
         private System.Windows.Forms.ToolStripMenuItem cocoToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox todayCB;
+        private System.Windows.Forms.DateTimePicker todayDTP;
     }
 }
 

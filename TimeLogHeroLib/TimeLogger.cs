@@ -148,7 +148,9 @@ namespace TimeLogHeroLib
 
             List<ActivationChanged> history = inMode == DurationModes.Unarchived ? ActiveHistory : _history;
 
-            DateTime todayDateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            DateTime now = Manager != null ? Manager.Today : DateTime.Now;
+
+            DateTime todayDateTime = new DateTime(now.Year, now.Month, now.Day);
 
             DateTime lastStart = new DateTime(0);
             foreach (ActivationChanged activation in history)
@@ -163,7 +165,7 @@ namespace TimeLogHeroLib
                     {
                         if (inMode == DurationModes.Today)
                         {
-                            if (DateTime.Now.Year == activation.Date.Year && DateTime.Now.DayOfYear == activation.Date.DayOfYear)
+                            if (now.Year == activation.Date.Year && now.DayOfYear == activation.Date.DayOfYear)
                             {
                                 duration += activation.Date - (lastStart > todayDateTime ? lastStart : todayDateTime);
                             }
@@ -179,10 +181,10 @@ namespace TimeLogHeroLib
             {
                 if (inMode == DurationModes.Today)
                 {
-                    duration += DateTime.Now - (history[history.Count - 1].Date > todayDateTime ? history[history.Count - 1].Date : todayDateTime);//
+                    duration += now - (history[history.Count - 1].Date > todayDateTime ? history[history.Count - 1].Date : todayDateTime);//
                 }
                 else
-                    duration += DateTime.Now - history[history.Count - 1].Date;
+                    duration += now - history[history.Count - 1].Date;
             }
 
             return duration;

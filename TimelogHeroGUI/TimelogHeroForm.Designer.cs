@@ -46,7 +46,7 @@
             this.ClientSize = new System.Drawing.Size(814, 399);
             this.Controls.Add(this.timelogHeroUctrl1);
             this.Name = "TimelogHeroForm";
-            this.Text = "Form1";
+            this.Text = "Time Log Hero ALPHA 1.0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TimelogHeroForm_FormClosing);
             this.ResumeLayout(false);
 

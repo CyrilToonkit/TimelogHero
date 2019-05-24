@@ -174,5 +174,19 @@ namespace TimelogHeroGUI
             Manager.Unarchive((sender as ToolStripDropDownItem).Text);
             RefreshClocks();
         }
+
+        private void todayCB_CheckedChanged(object sender, EventArgs e)
+        {
+            _manager.OverrideToday = todayCB.Checked;
+            if(_manager.OverrideToday)
+            {
+                _manager.Today = todayDTP.Value;
+            }
+        }
+
+        private void todayDTP_ValueChanged(object sender, EventArgs e)
+        {
+            _manager.Today = todayDTP.Value;
+        }
     }
 }
